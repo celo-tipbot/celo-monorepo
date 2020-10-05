@@ -17,6 +17,14 @@ export const KeybaseClaimType = t.type({
 })
 export type KeybaseClaim = t.TypeOf<typeof KeybaseClaimType>
 
+export const GithubClaimType = t.type({
+  type: t.literal(ClaimTypes.GITHUB),
+  timestamp: TimestampType,
+  // TODO: Validate compliant username before just interpolating
+  username: t.string,
+})
+export type GithubClaim = t.TypeOf<typeof GithubClaimType>
+
 const DomainClaimType = t.type({
   type: t.literal(ClaimTypes.DOMAIN),
   timestamp: TimestampType,
@@ -61,6 +69,7 @@ export type Claim =
   | NameClaim
   | AccountClaim
   | StorageClaim
+  | GithubClaim
 
 export type ClaimPayload<K extends ClaimTypes> = K extends typeof ClaimTypes.DOMAIN
   ? DomainClaim

@@ -1,10 +1,5 @@
-import { hashOfClaim, KeybaseClaim } from '@celo/contractkit/lib/identity/claims/claim'
-import {
-  createKeybaseClaim,
-  keybaseFilePathToProof,
-  proofFileName,
-  targetURL,
-} from '@celo/contractkit/lib/identity/claims/keybase'
+import { GithubClaim, hashOfClaim } from '@celo/contractkit/lib/identity/claims/claim'
+import { createGithubClaim, proofFileName } from '@celo/contractkit/lib/identity/claims/github'
 import { flags } from '@oclif/command'
 import { toChecksumAddress } from 'ethereumjs-util'
 import { writeFileSync } from 'fs'
@@ -30,7 +25,7 @@ export default class ClaimGithub extends ClaimCommand {
     const username = res.flags.username
     const metadata = await this.readMetadata()
     const accountAddress = toChecksumAddress(metadata.data.meta.address)
-    const claim = createKeybaseClaim(username)
+    const claim = createGithubClaim(username)
     const signature = await this.signer.sign(hashOfClaim(claim))
     await this.addClaim(metadata, claim)
     this.writeMetadata(metadata)
@@ -38,19 +33,11 @@ export default class ClaimGithub extends ClaimCommand {
     this.printManualInstruction(claim, signature, username, accountAddress)
   }
 
-  printManualInstruction(
-    claim: KeybaseClaim,
-    signature: string,
-    username: string,
-    address: string
-  ) {
+  printManualInstruction(claim: GithubClaim, signature: string, username: string, address: string) {
     const fileName = proofFileName(address)
     writeFileSync(fileName, JSON.stringify({ claim, signature }))
     console.info(
-      `\nProving a github claim requires you to publish the signed claim on your Github account to prove ownership. We saved it for you under ${fileName}. It should be hosted in your public folder at ${keybaseFilePathToProof}/${fileName}, so that it is available under ${targetURL(
-        username,
-        address
-      )}\n`
+      `\nProving a github claim requires you to publish the signed claim on your Github account to prove ownership. We saved it for you under ${fileName}. Please create a public gist with this one file, using your Github account ${username}.\n`
     )
   }
 }
