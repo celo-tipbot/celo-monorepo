@@ -82,7 +82,9 @@ export type ClaimPayload<K extends ClaimTypes> = K extends typeof ClaimTypes.DOM
   ? AttestationServiceURLClaim
   : K extends typeof ClaimTypes.ACCOUNT
   ? AccountClaim
-  : StorageClaim
+  : K extends typeof ClaimTypes.STORAGE
+  ? StorageClaim
+  : GithubClaim
 
 export const isOfType = <K extends ClaimTypes>(type: K) => (data: Claim): data is ClaimPayload<K> =>
   data.type === type

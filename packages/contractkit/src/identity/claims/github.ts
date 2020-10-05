@@ -7,7 +7,8 @@ import { GithubClaim, GithubClaimType, hashOfClaim, SignedClaimType } from './cl
 import { ClaimTypes, now } from './types'
 
 export const proofFileName = (address: Address) => `verify-${address}.json`
-export const gistsURL = (username: string) => `https://api.github.com/users/${username}/gists`
+export const gistsURL = (username: string, address: Address) =>
+  `https://raw.githubusercontent.com/${username}/celo-metadata/main/${proofFileName(address)}`
 
 // If verification encounters an error, returns the error message as a string
 // otherwise returns undefined when successful
@@ -17,24 +18,17 @@ export async function verifyGithubClaim(
   signer: Address
 ): Promise<string | undefined> {
   try {
-    const resp = await fetch(gistsURL(username))
+    const resp = await fetch(gistsURL(username, signer))
     if (!resp.ok) {
-      return `Proof of ownership could not be retrieved at ${gistsURL(username)}, request yielded ${
-        resp.status
-      } status code`
+      return `Proof of ownership could not be retrieved at ${gistsURL(
+        username,
+        signer
+      )}, request yielded ${resp.status} status code`
     }
 
     const jsonResp = await resp.json()
-    const claimObj = jsonResp.find((gist: any) => gist.files.hasOwnProperty(proofFileName))
-    if (!claimObj) {
-      return `Proof of ownership does not exist in ${username}'s gists.`
-    }
 
-    const claimURL = claimObj.url
-    const claimResp = await fetch(claimURL)
-    const claimJsonResp = await claimResp.json()
-
-    const parsedClaim = SignedClaimType.decode(claimJsonResp)
+    const parsedClaim = SignedClaimType.decode(jsonResp)
     if (isLeft(parsedClaim)) {
       return 'Claim is incorrectly formatted'
     }

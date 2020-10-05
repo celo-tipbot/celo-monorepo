@@ -5,7 +5,8 @@ import { promisify } from 'util'
 import { ContractKit } from '../..'
 import { IdentityMetadataWrapper } from '../metadata'
 import { AccountClaim } from './account'
-import { Claim, DOMAIN_TXT_HEADER, DomainClaim, serializeClaim } from './claim'
+import { Claim, DomainClaim, DOMAIN_TXT_HEADER, serializeClaim } from './claim'
+import { verifyGithubClaim } from './github'
 import { verifyKeybaseClaim } from './keybase'
 import { ClaimTypes } from './types'
 
@@ -24,6 +25,8 @@ export async function verifyClaim(kit: ContractKit, claim: Claim, address: strin
       return verifyAccountClaim(kit, claim, address)
     case ClaimTypes.DOMAIN:
       return verifyDomainRecord(kit, claim, address)
+    case ClaimTypes.GITHUB:
+      return verifyGithubClaim(kit, claim.username, address)
     default:
       break
   }
