@@ -37,7 +37,7 @@ export default class ClaimGithub extends ClaimCommand {
     const fileName = proofFileName(address)
     writeFileSync(fileName, JSON.stringify({ claim, signature }))
     console.info(
-      `\nProving a github claim requires you to publish the signed claim on your Github account to prove ownership. We saved it for you under ${fileName}. Please create a public gist with this one file, using your Github account ${username}.\n`
+      `\nProving a github claim requires you to publish the signed claim on your Github account to prove ownership. We saved it for you under ${fileName}. Please create a public repository called "celo-metadata" with this file in it, using your Github account ${username}.\n`
     )
   }
 }
