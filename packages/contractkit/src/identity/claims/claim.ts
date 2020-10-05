@@ -51,6 +51,7 @@ export const ClaimType = t.union([
   KeybaseClaimType,
   NameClaimType,
   StorageClaimType,
+  GithubClaimType,
 ])
 
 export const SignedClaimType = t.type({
