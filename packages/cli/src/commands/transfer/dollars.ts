@@ -14,6 +14,10 @@ export default class TransferDollars extends BaseCommand {
     to: Flags.address({ required: true, description: 'Address of the receiver' }),
     value: flags.string({ required: true, description: 'Amount to transfer (in wei)' }),
     comment: flags.string({ description: 'Transfer comment' }),
+    approve: flags.boolean({
+      description: 'Whether to approve instead of transfer',
+      default: false,
+    }),
   }
 
   static examples = [
@@ -31,6 +35,8 @@ export default class TransferDollars extends BaseCommand {
 
     const tx = res.flags.comment
       ? stableToken.transferWithComment(to, value.toFixed(), res.flags.comment)
+      : res.flags.approve
+      ? stableToken.approve(to, value.toFixed())
       : stableToken.transfer(to, value.toFixed())
 
     await newCheckBuilder(this)
@@ -53,6 +59,9 @@ export default class TransferDollars extends BaseCommand {
       )
       .runChecks()
 
-    await displaySendTx(res.flags.comment ? 'transferWithComment' : 'transfer', tx)
+    await displaySendTx(
+      res.flags.comment ? 'transferWithComment' : res.flags.approve ? 'approve' : 'transfer',
+      tx
+    )
   }
 }

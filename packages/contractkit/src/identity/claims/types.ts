@@ -14,9 +14,15 @@ export enum ClaimTypes {
   PROFILE_PICTURE = 'PROFILE_PICTURE',
   STORAGE = 'STORAGE',
   TWITTER = 'TWITTER',
+  GITHUB = 'GITHUB',
 }
 
-export const VERIFIABLE_CLAIM_TYPES = [ClaimTypes.KEYBASE, ClaimTypes.ACCOUNT, ClaimTypes.DOMAIN]
+export const VERIFIABLE_CLAIM_TYPES = [
+  ClaimTypes.KEYBASE,
+  ClaimTypes.ACCOUNT,
+  ClaimTypes.DOMAIN,
+  ClaimTypes.GITHUB,
+]
 
 // Claims whose status can be validated
 export const VALIDATABLE_CLAIM_TYPES = [ClaimTypes.ATTESTATION_SERVICE_URL]
